@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZOD Pulse</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Inter,Arial,sans-serif;
+}
+
+body{
+  background:#f5f7fb;
+  color:#172033;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:245px;
+  background:#111827;
+  color:white;
+  padding:25px 16px;
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  z-index:20;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+  padding:5px 12px 30px;
+}
+
+.logo span{
+  color:#35d0ba;
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.menu button{
+  width:100%;
+  padding:13px 15px;
+  border-radius:10px;
+  background:transparent;
+  color:#aeb8ca;
+  text-align:left;
+  font-size:14px;
+}
+
+.menu button:hover,
+.menu button.active{
+  background:#1f2937;
+  color:white;
+}
+
+.menu button.active{
+  border-left:3px solid #35d0ba;
+}
+
+/* MAIN */
+.main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:25px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.title h1{
+  font-size:25px;
+}
+
+.title p{
+  color:#7b8495;
+  margin-top:5px;
+  font-size:14px;
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#35d0ba;
+  color:#071817;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+/* SECTIONS */
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* CARDS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:white;
+  border:1px solid #e7eaf0;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.03);
+}
+
+.card-label{
+  color:#7b8495;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.card-value{
+  font-size:25px;
+  font-weight:800;
+}
+
+.card-change{
+  font-size:12px;
+  margin-top:8px;
+  color:#159b7e;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:20px;
+}
+
+.section-card{
+  background:white;
+  border:1px solid #e7eaf0;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.section-head h2{
+  font-size:17px;
+}
+
+.section-head span{
+  color:#7b8495;
+  font-size:12px;
+}
+
+/* CHART */
+.chart{
+  height:220px;
+  display:flex;
+  align-items:end;
+  gap:12px;
+  padding:15px 5px 0;
+  border-bottom:1px solid #e7eaf0;
+}
+
+.bar-wrap{
+  height:100%;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:end;
+  align-items:center;
+  gap:7px;
+}
+
+.bar{
+  width:70%;
+  min-height:15px;
+  border-radius:7px 7px 0 0;
+  background:#35d0ba;
+}
+
+.bar-wrap small{
+  color:#8992a2;
+  font-size:10px;
+}
+
+/* AI */
+.ai-box{
+  background:#111827;
+  color:white;
+  border-radius:15px;
+  padding:20px;
+}
+
+.ai-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.ai-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:#35d0ba;
+  color:#071817;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+}
+
+.ai-box p{
+  color:#c8d0dc;
+  line-height:1.6;
+  font-size:14px;
+}
+
+.ai-action{
+  margin-top:15px;
+  padding:11px 15px;
+  background:#35d0ba;
+  color:#071817;
+  border-radius:9px;
+  font-weight:700;
+}
+
+/* LIST */
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.list-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:13px;
+  background:#f8f9fc;
+  border-radius:10px;
+}
+
+.item-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.item-icon{
+  width:35px;
+  height:35px;
+  border-radius:9px;
+  background:#e7f8f5;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.item-name{
+  font-weight:700;
+  font-size:13px;
+}
+
+.item-sub{
+  color:#8992a2;
+  font-size:11px;
+  margin-top:3px;
+}
+
+.badge{
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:10px;
+  background:#e7f8f5;
+  color:#168c76;
+}
+
+/* TABLE */
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:14px 10px;
+  border-bottom:1px solid #edf0f4;
+  text-align:left;
+  font-size:13px;
+}
+
+th{
+  color:#7b8495;
+  font-weight:600;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#e7f8f5;
+  color:#168c76;
+  font-size:10px;
+}
+
+/* BUTTONS */
+.primary{
+  padding:11px 16px;
+  border-radius:9px;
+  background:#111827;
+  color:white;
+  font-weight:700;
+}
+
+.primary:hover{
+  opacity:.9;
+}
+
+.teal{
+  background:#35d0ba;
+  color:#071817;
+}
+
+/* SALES */
+.sales-box{
+  background:linear-gradient(135deg,#111827,#1c293b);
+  color:white;
+  border-radius:18px;
+  padding:25px;
+  margin-top:20px;
+}
+
+.sales-box h2{
+  font-size:21px;
+  margin-bottom:8px;
+}
+
+.sales-box p{
+  color:#c5cedb;
+  font-size:14px;
+  line-height:1.6;
+  max-width:700px;
+}
+
+.sales-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+  flex-wrap:wrap;
+}
+
+/* MODAL */
+.modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal-bg.show{
+  display:flex;
+}
+
+.modal{
+  width:100%;
+  max-width:480px;
+  background:white;
+  border-radius:18px;
+  padding:25px;
+  max-height:90vh;
+  overflow:auto;
+}
+
+.modal h2{
+  margin-bottom:8px;
+}
+
+.modal p{
+  color:#737d8e;
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:18px;
+}
+
+.form-group{
+  margin-bottom:14px;
+}
+
+.form-group label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+  width:100%;
+  padding:12px;
+  border:1px solid #dfe4eb;
+  border-radius:9px;
+  outline:none;
+}
+
+.form-group textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:18px;
+}
+
+.cancel{
+  background:#eef1f5;
+  padding:11px 16px;
+  border-radius:9px;
+}
+
+/* MOBILE */
+.mobile-nav{
+  display:none;
+}
+
+@media(max-width:900px){
+  .sidebar{
+    display:none;
+  }
+
+  .main{
+    margin-left:0;
+    width:100%;
+    padding:18px;
+    padding-bottom:85px;
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:65px;
+    background:#111827;
+    z-index:50;
+    justify-content:space-around;
+    align-items:center;
+  }
+
+  .mobile-nav button{
+    background:none;
+    color:#9da8b8;
+    font-size:10px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    align-items:center;
+  }
+
+  .mobile-nav button.active{
+    color:#35d0ba;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .profile span{
+    display:none;
+  }
+}
+
+@media(max-width:500px){
+  .cards{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  .card-value{
+    font-size:20px;
+  }
+
+  .title h1{
+    font-size:21px;
+  }
+
+  .section-card{
+    padding:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="logo">
+    ZOD <span>Pulse</span>
+  </div>
+
+  <div class="menu">
+    <button class="active" onclick="showPage('dashboard',this)">▣ &nbsp; Dashboard</button>
+    <button onclick="showPage('customers',this)">◉ &nbsp; Customers</button>
+    <button onclick="showPage('support',this)">◌ &nbsp; Support</button>
+    <button onclick="showPage('analytics',this)">◒ &nbsp; Analytics</button>
+    <button onclick="showPage('insights',this)">✦ &nbsp; AI Insights</button>
+    <button onclick="showPage('alerts',this)">♢ &nbsp; Alerts</button>
+    <button onclick="showPage('settings',this)">⚙ &nbsp; Settings</button>
+  </div>
+
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<header class="topbar">
+
+  <div class="title">
+    <h1 id="pageTitle">Business Overview</h1>
+    <p id="pageSubtitle">Welcome to your business pulse.</p>
+  </div>
+
+  <div class="profile">
+    <span>Demo Company</span>
+    <div class="avatar">DC</div>
+  </div>
+
+</header>
+
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page active">
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-label">Revenue</div>
+      <div class="card-value">₦24.8M</div>
+      <div class="card-change">↑ 12.8% this month</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Customers</div>
+      <div class="card-value">12,486</div>
+      <div class="card-change">↑ 8.4% this month</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Satisfaction</div>
+      <div class="card-value">94.2%</div>
+      <div class="card-change">↑ 3.1% this month</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Issues Resolved</div>
+      <div class="card-value">1,284</div>
+      <div class="card-change">↑ 16.2% this month</div>
+    </div>
+
+  </div>
+
+
+  <div class="grid">
+
+    <div class="section-card">
+
+      <div class="section-head">
+        <h2>Revenue Performance</h2>
+        <span>Last 7 months</span>
+      </div>
+
+      <div class="chart">
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:40%"></div>
+          <small>Apr</small>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:52%"></div>
+          <small>May</small>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:47%"></div>
+          <small>Jun</small>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:66%"></div>
+          <small>Jul</small>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:59%"></div>
+          <small>Aug</small>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:78%"></div>
+          <small>Sep</small>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar" style="height:92%"></div>
+          <small>Oct</small>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="ai-box">
+
+      <div class="ai-title">
+        <div class="ai-icon">✦</div>
+        <div>
+          <strong>AI Business Insight</strong>
+          <div style="font-size:11px;color:#9ca9b8;">Powered by ZOD Pulse Intelligence</div>
+        </div>
+      </div>
+
+      <p>
+        Customer activity increased by 18% this month.
+        Support complaints decreased by 11%, while the retail
+        segment shows a higher risk of customer inactivity.
+      </p>
+
+      <button class="ai-action" onclick="showPage('insights')">
+        View Full Insight
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="grid">
+
+    <div class="section-card">
+
+      <div class="section-head">
+        <h2>Recent Activity</h2>
+        <span>Live demo data</span>
+      </div>
+
+      <div class="list">
+
+        <div class="list-item">
+          <div class="item-left">
+            <div class="item-icon">👤</div>
+            <div>
+              <div class="item-name">New customer registered</div>
+              <div class="item-sub">Customer #12486</div>
+            </div>
+          </div>
+          <span class="badge">New</span>
+        </div>
+
+        <div class="list-item">
+          <div class="item-left">
+            <div class="item-icon">✓</div>
+            <div>
+              <div class="item-name">Support issue resolved</div>
+              <div class="item-sub">Ticket #8831</div>
+            </div>
+          </div>
+          <span class="badge">Resolved</span>
+        </div>
+
+        <div class="list-item">
+          <div class="item-left">
+            <div class="item-icon">₦</div>
+            <div>
+              <div class="item-name">Large transaction detected</div>
+              <div class="item-sub">₦1,850,000</div>
+            </div>
+          </div>
+          <span class="badge">Reviewed</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="section-card">
+
+      <div class="section-head">
+        <h2>Customer Health</h2>
+        <span>This month</span>
+      </div>
+
+      <div class="list">
+
+        <div class="list-item">
+          <div>
+            <div class="item-name">Healthy</div>
+            <div class="item-sub">9,842 customers</div>
+          </div>
+          <strong>79%</strong>
+        </div>
+
+        <div class="list-item">
+          <div>
+            <div class="item-name">At Risk</div>
+            <div class="item-sub">1,734 customers</div>
+          </div>
+          <strong>14%</strong>
+        </div>
+
+        <div class="list-item">
+          <div>
+            <div class="item-name">Inactive</div>
+            <div class="item-sub">910 customers</div>
+          </div>
+          <strong>7%</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="sales-box">
+
+    <h2>Turn business data into decisions.</h2>
+
+    <p>
+      ZOD Pulse helps businesses understand customers, monitor
+      performance, identify risks and discover opportunities from
+      one intelligent workspace.
+    </p>
+
+    <div class="sales-buttons">
+      <button class="ai-action" onclick="showPage('insights')">
+        Explore ZOD Pulse
+      </button>
+
+      <button class="primary" onclick="openLicense()">
+        Request Licensing
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CUSTOMERS -->
+<section id="customers" class="page">
+
+  <div class="section-card">
+
+    <div class="section-head">
+      <h2>Customer Intelligence</h2>
+      <button class="primary teal" onclick="openLicense()">Request Licensing</button>
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Segment</th>
+            <th>Value</th>
+            <th>Health</th>
+            <th>Activity</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Customer 001</td>
+            <td>Premium</td>
+            <td>₦2.8M</td>
+            <td><span class="status">Healthy</span></td>
+            <td>Today</td>
+          </tr>
+
+          <tr>
+            <td>Customer 002</td>
+            <td>Retail</td>
+            <td>₦840K</td>
+            <td><span class="status">Healthy</span></td>
+            <td>Today</td>
+          </tr>
+
+          <tr>
+            <td>Customer 003</td>
+            <td>Retail</td>
+            <td>₦420K</td>
+            <td><span class="status">At Risk</span></td>
+            <td>5 days ago</td>
+          </tr>
+
+          <tr>
+            <td>Customer 004</td>
+            <td>Enterprise</td>
+            <td>₦5.4M</td>
+            <td><span class="status">Healthy</span></td>
+            <td>Today</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SUPPORT -->
+<section id="support" class="page">
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-label">Open Tickets</div>
+      <div class="card-value">84</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Resolved</div>
+      <div class="card-value">1,284</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Avg. Response</div>
+      <div class="card-value">18m</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Satisfaction</div>
+      <div class="card-value">94.2%</div>
+    </div>
+
+  </div>
+
+  <div class="section-card">
+
+    <div class="section-head">
+      <h2>Priority Support Issues</h2>
+    </div>
+
+    <div class="list">
+
+      <div class="list-item">
+        <div>
+          <div class="item-name">Payment processing complaint</div>
+          <div class="item-sub">Ticket #8837 • 12 minutes ago</div>
+        </div>
+        <span class="badge">High</span>
+      </div>
+
+      <div class="list-item">
+        <div>
+          <div class="item-name">Account verification issue</div>
+          <div class="item-sub">Ticket #8834 • 35 minutes ago</div>
+        </div>
+        <span class="badge">Medium</span>
+      </div>
+
+      <div class="list-item">
+        <div>
+          <div class="item-name">Refund request</div>
+          <div class="item-sub">Ticket #8829 • 1 hour ago</div>
+        </div>
+        <span class="badge">Medium</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ANALYTICS -->
+<section id="analytics" class="page">
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-label">Conversion Rate</div>
+      <div class="card-value">8.7%</div>
+      <div class="card-change">↑ 1.4%</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Retention</div>
+      <div class="card-value">82.4%</div>
+      <div class="card-change">↑ 4.2%</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Avg. Customer Value</div>
+      <div class="card-value">₦198K</div>
+      <div class="card-change">↑ 9.1%</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Growth</div>
+      <div class="card-value">18.6%</div>
+      <div class="card-change">↑ 2.8%</div>
+    </div>
+
+  </div>
+
+  <div class="section-card">
+
+    <div class="section-head">
+      <h2>Business Performance</h2>
+      <span>Sample analytics</span>
+    </div>
+
+    <div class="chart">
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:38%"></div>
+        <small>Mon</small>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:55%"></div>
+        <small>Tue</small>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:48%"></div>
+        <small>Wed</small>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:73%"></div>
+        <small>Thu</small>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:61%"></div>
+        <small>Fri</small>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:84%"></div>
+        <small>Sat</small>
+      </div>
+
+      <div class="bar-wrap">
+        <div class="bar" style="height:94%"></div>
+        <small>Sun</small>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- AI INSIGHTS -->
+<section id="insights" class="page">
+
+  <div class="ai-box">
+
+    <div class="ai-title">
+      <div class="ai-icon">✦</div>
+      <div>
+        <strong>ZOD Pulse Intelligence</strong>
+        <div style="font-size:11px;color:#9ca9b8;">
+          Business insights generated from sample data
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Overall business performance is trending positively.
+      Revenue growth is outpacing customer growth, suggesting
+      increased customer value.
+    </p>
+
+  </div>
+
+  <br>
+
+  <div class="grid">
+
+    <div class="section-card">
+      <div class="section-head">
+        <h2>Opportunity</h2>
+      </div>
+
+      <p style="line-height:1.7;color:#697386;font-size:14px;">
+        Premium customers show the strongest purchasing activity.
+        A targeted loyalty campaign could increase retention and
+        lifetime customer value.
+      </p>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head">
+        <h2>Risk Detected</h2>
+      </div>
+
+      <p style="line-height:1.7;color:#697386;font-size:14px;">
+        Retail customers with no activity for more than five days
+        have an increased probability of becoming inactive.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="sales-box">
+
+    <h2>Give your business a pulse.</h2>
+
+    <p>
+      Imagine having this intelligence connected to your company's
+      real customer, sales and support data.
+    </p>
+
+    <div class="sales-buttons">
+      <button class="ai-action" onclick="openLicense()">
+        Request Licensing
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ALERTS -->
+<section id="alerts" class="page">
+
+  <div class="section-card">
+
+    <div class="section-head">
+      <h2>Business Alerts</h2>
+      <span>3 active alerts</span>
+    </div>
+
+    <div class="list">
+
+      <div class="list-item">
+        <div>
+          <div class="item-name">Customer inactivity increasing</div>
+          <div class="item-sub">
+            Retail segment inactivity increased by 7%.
+          </div>
+        </div>
+        <span class="badge">Attention</span>
+      </div>
+
+      <div class="list-item">
+        <div>
+          <div class="item-name">Revenue milestone reached</div>
+          <div class="item-sub">
+            Monthly revenue passed ₦24M.
+          </div>
+        </div>
+        <span class="badge">Positive</span>
+      </div>
+
+      <div class="list-item">
+        <div>
+          <div class="item-name">Support performance improved</div>
+          <div class="item-sub">
+            Average response time dropped by 16%.
+          </div>
+        </div>
+        <span class="badge">Positive</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+<section id="settings" class="page">
+
+  <div class="section-card">
+
+    <div class="section-head">
+      <h2>Workspace Settings</h2>
+    </div>
+
+    <div class="form-group">
+      <label>Company Name</label>
+      <input value="Demo Company">
+    </div>
+
+    <div class="form-group">
+      <label>Industry</label>
+      <select>
+        <option>Financial Technology</option>
+        <option>E-commerce</option>
+        <option>Telecommunications</option>
+        <option>Retail</option>
+        <option>Logistics</option>
+      </select>
+    </div>
+
+    <button class="primary" onclick="saveSettings()">
+      Save Settings
+    </button>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav">
+
+  <button class="active" onclick="showPage('dashboard',this)">
+    <span>▣</span>Home
+  </button>
+
+  <button onclick="showPage('customers',this)">
+    <span>◉</span>Customers
+  </button>
+
+  <button onclick="showPage('analytics',this)">
+    <span>◒</span>Analytics
+  </button>
+
+  <button onclick="showPage('insights',this)">
+    <span>✦</span>AI
+  </button>
+
+  <button onclick="showPage('settings',this)">
+    <span>⚙</span>Settings
+  </button>
+
+</nav>
+
+
+<!-- LICENSE MODAL -->
+<div class="modal-bg" id="licenseModal">
+
+  <div class="modal">
+
+    <h2>Request ZOD Pulse Licensing</h2>
+
+    <p>
+      Interested in acquiring, licensing or integrating ZOD Pulse
+      into your company? Send a request and the product owner can
+      contact you.
+    </p>
+
+    <form onsubmit="submitLicense(event)">
+
+      <div class="form-group">
+        <label>Your Name</label>
+        <input id="buyerName" required placeholder="Enter your name">
+      </div>
+
+      <div class="form-group">
+        <label>Company Name</label>
+        <input id="buyerCompany" required placeholder="Enter company name">
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input id="buyerEmail" type="email" required placeholder="Enter email">
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input id="buyerPhone" placeholder="Phone / WhatsApp">
+      </div>
+
+      <div class="form-group">
+        <label>Interest</label>
+
+        <select id="buyerInterest">
+
+          <option>Software Licensing</option>
+          <option>Full Acquisition</option>
+          <option>White-label Partnership</option>
+          <option>Custom Development</option>
+          <option>Investment / Partnership</option>
+
+        </select>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Message</label>
+
+        <textarea id="buyerMessage"
+        placeholder="Tell us what you are interested in..."></textarea>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button type="button"
+        class="cancel"
+        onclick="closeLicense()">
+          Cancel
+        </button>
+
+        <button type="submit" class="primary teal">
+          Send Request
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* PAGE NAVIGATION */
+
+const pageInfo = {
+
+  dashboard:{
+    title:"Business Overview",
+    subtitle:"Welcome to your business pulse."
+  },
+
+  customers:{
+    title:"Customer Intelligence",
+    subtitle:"Understand your customers and their behaviour."
+  },
+
+  support:{
+    title:"Customer Support",
+    subtitle:"Monitor customer issues and resolution performance."
+  },
+
+  analytics:{
+    title:"Business Analytics",
+    subtitle:"Measure growth, performance and customer value."
+  },
+
+  insights:{
+    title:"AI Insights",
+    subtitle:"Turn business data into actionable intelligence."
+  },
+
+  alerts:{
+    title:"Business Alerts",
+    subtitle:"Important events and opportunities requiring attention."
+  },
+
+  settings:{
+    title:"Settings",
+    subtitle:"Manage your ZOD Pulse workspace."
+  }
+
+};
+
+
+function showPage(page,button){
+
+  document.querySelectorAll(".page")
+    .forEach(p => p.classList.remove("active"));
+
+  const selected = document.getElementById(page);
+
+  if(selected){
+    selected.classList.add("active");
+  }
+
+  document.querySelectorAll(".menu button")
+    .forEach(b => b.classList.remove("active"));
+
+  document.querySelectorAll(".mobile-nav button")
+    .forEach(b => b.classList.remove("active"));
+
+  if(button){
+    button.classList.add("active");
+  }
+
+  if(pageInfo[page]){
+
+    document.getElementById("pageTitle").textContent =
+      pageInfo[page].title;
+
+    document.getElementById("pageSubtitle").textContent =
+      pageInfo[page].subtitle;
+
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* LICENSE MODAL */
+
+function openLicense(){
+
+  document
+    .getElementById("licenseModal")
+    .classList.add("show");
+
+}
+
+
+function closeLicense(){
+
+  document
+    .getElementById("licenseModal")
+    .classList.remove("show");
+
+}
+
+
+function submitLicense(event){
+
+  event.preventDefault();
+
+  const name =
+    document.getElementById("buyerName").value;
+
+  const company =
+    document.getElementById("buyerCompany").value;
+
+  const email =
+    document.getElementById("buyerEmail").value;
+
+  const phone =
+    document.getElementById("buyerPhone").value;
+
+  const interest =
+    document.getElementById("buyerInterest").value;
+
+  const message =
+    document.getElementById("buyerMessage").value;
+
+
+  const subject =
+    encodeURIComponent(
+      "ZOD Pulse Licensing / Acquisition Request"
+    );
+
+
+  const body =
+    encodeURIComponent(
+`Hello,
+
+I am interested in ZOD Pulse.
+
+Name: ${name}
+Company: ${company}
+Email: ${email}
+Phone: ${phone}
+Interest: ${interest}
+
+Message:
+${message}
+
+Sent from the ZOD Pulse demo.`
+    );
+
+
+  /*
+    Replace the email address below with the email
+    you want buyers to contact.
+  */
+
+  const emailAddress =
+    "eze61615@gmail.com";
+
+
+  window.location.href =
+    `mailto:${emailAddress}?subject=${subject}&body=${body}`;
+
+}
+
+
+/* SETTINGS */
+
+function saveSettings(){
+
+  alert(
+    "Settings saved successfully in this demo."
+  );
+
+}
+
+
+/* CLOSE MODAL WHEN CLICKING OUTSIDE */
+
+document
+  .getElementById("licenseModal")
+  .addEventListener("click",function(e){
+
+    if(e.target === this){
+      closeLicense();
+    }
+
+  });
+
+</script>
+
+</body>
+</html>
